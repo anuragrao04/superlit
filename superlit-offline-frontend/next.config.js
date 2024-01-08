@@ -4,7 +4,7 @@ const nextConfig = {
     return [
       {
         source: "/api/backendi/:path*",
-        destination: "http://10.3.32.54:6969/:path*",
+        destination: "http://localhost:6969/:path*",
       },
     ];
   },
