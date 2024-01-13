@@ -4,8 +4,7 @@ const express = require("express");
 const router = express.Router();
 const { execSync } = require("child_process");
 const jwt = require("jsonwebtoken");
-let sent_token = "";
-let sent_id = "";
+const nodemailer = require("nodemailer");
 
 const {
   MongoClient,
@@ -53,7 +52,7 @@ router.post("/", async (req, res) => {
 
     exec(
       `echo ${req.body["input"]} | ./compile_c.sh code.c`,
-      function (error, stdout, stderr) {
+      function(error, stdout, stderr) {
         res.send(stderr + stdout);
         console.log("sent ", stderr + stdout);
       },
@@ -78,7 +77,7 @@ router.post("/submit", async (req, res) => {
       return new Promise((resolve, reject) => {
         exec(
           `echo ${testcase["input"]} | ./run_testcase.sh code.c`,
-          function (error, stdout, stderr) {
+          function(error, stdout, stderr) {
             if (stdout != testcase["expected_output"]) {
               const result = {
                 all_passed: false,
@@ -159,14 +158,34 @@ router.post("/auth/forgot_password", async (req, res) => {
         expiresIn: "15m",
       });
       let link = encodeURI(
-        `http://localhost:6969/auth/reset_password/${user._id}/${token}`,
+        `http://localhost:3000/auth/reset_password/${user._id}/${token}`,
       );
-      sent_id = user._id;
-      sent_token = token;
 
-      console.log(link);
-      // send this link to the user's email somehow. format it with the srn
-      res.sendStatus(200);
+      // send this link to the user's email somehow.
+      var transporter = nodemailer.createTransport({
+        service: "Mailgun",
+        auth: {
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASS,
+        },
+      });
+      var mailOpts = {
+        from: process.env.MAIL_USER,
+        to: `${srn}@pesu.pes.edu`,
+        subject: "Forgot Password",
+        html:
+          "<h1>Superlit</h1><p>Click <a href=" +
+          link +
+          ">here</a> to reset your password.</p>",
+      };
+      transporter.sendMail(mailOpts, function(err, response) {
+        if (err) {
+          console.log(err);
+          throw err;
+        } else {
+          res.sendStatus(200);
+        }
+      });
     } else {
       res.sendStatus(404);
     }
@@ -177,6 +196,7 @@ router.post("/auth/forgot_password", async (req, res) => {
 
 router.post("/auth/reset_password/:id/:token", async (req, res, next) => {
   let { id, token } = req.params;
+  console.log(id, token);
 
   // now we need to verify the token with the ID coming in
   const user = await col.findOne({ _id: new ObjectId(id) });
