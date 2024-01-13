@@ -4,9 +4,9 @@ import { useRef } from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
 
-const monaco = dynamic(() => import("monaco-editor"), { ssr: false });
-const Editor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
 import { loader } from "@monaco-editor/react";
+import * as monaco from "monaco-editor";
+const Editor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
 
 loader.config({ monaco });
 const defaultCode = String.raw`#include <stdio.h>
@@ -28,6 +28,8 @@ var example_output = `Hello Superlit!
 
 export default function CodeEditor() {
   const editorRef = useRef(null);
+  const inputRef = useRef(null);
+  const outputRef = useRef(null);
 
   function handleEditorDidMount(editor, monaco) {
     editorRef.current = editor;
@@ -35,7 +37,7 @@ export default function CodeEditor() {
 
   function run_button_clicked() {
     const editorValue = editorRef.current.getValue();
-    const inputValue = document.querySelector(".code_input").value; // USE USE EFFECT!
+    const inputValue = inputRef.current.value;
     const post_request_data = {
       code: editorValue,
       input: inputValue,
@@ -52,7 +54,7 @@ export default function CodeEditor() {
         },
       })
       .then((response) => {
-        const output_screen = document.querySelector(".code_output");
+        const output_screen = outputRef.current;
         output_screen.value = response.data;
       })
       .catch((error) => {
@@ -156,7 +158,7 @@ export default function CodeEditor() {
         <Editor
           height="80vh"
           theme="vs-dark"
-          language="c"
+          defaultLanguage="c"
           defaultValue={defaultCode}
           automaticLayout="true"
           className="m-5 pt-5 pb-5 bg-[#1E1E21] rounded-lg"
@@ -170,6 +172,7 @@ export default function CodeEditor() {
             <textarea
               className="code_input h-full w-full rounded-b-lg bg-[#252526] text-white outline-none resize-none pb-2 pl-2 pr-2"
               defaultValue={example_input}
+              ref={inputRef}
             ></textarea>
           </div>
           <div className="flex flex-col justify-center items-center">
@@ -200,6 +203,7 @@ export default function CodeEditor() {
             <textarea
               disabled
               className="code_output h-full w-full rounded-b-lg bg-[#252526] text-white p-2 outline-none resize-none read-only"
+              ref={outputRef}
             />
           </div>
         </div>
