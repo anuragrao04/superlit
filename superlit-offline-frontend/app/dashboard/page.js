@@ -2,16 +2,25 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAuth } from "@/components/AuthContext";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Dashboard() {
   const { user, login, logout } = useAuth();
   const router = useRouter();
   console.log(user);
-  if (!user) {
-    router.replace("/auth");
-  }
-  // get logged_in_user_type from backend
+  useEffect(() => {
+    if (!user) {
+      router.replace("/auth");
+    }
+  }, []);
+  // we gotta figure out a way to determine user type
   const user_type = "teacher";
+  if (!user)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Loading...
+      </div>
+    );
   return (
     <div>
       {user_type === "teacher" ? (
