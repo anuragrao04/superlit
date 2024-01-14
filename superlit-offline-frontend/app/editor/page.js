@@ -87,6 +87,7 @@ export default function CodeEditor() {
       input: inputValue,
     };
 
+
     console.log(editorValue);
     // console.log(inputValue);
 
@@ -175,11 +176,35 @@ export default function CodeEditor() {
       });
   }
 
+
+    const goToNextQuestion = () => {
+      setQuestionNumber((qNum) => {
+        if(qNum == test_data.questions.length - 1){
+           return qNum;
+        }
+        else {
+          return qNum + 1;
+        }
+      });
+    }
+
+    const goToPrevQuestion = () => {
+      setQuestionNumber((qNum) => {
+        if(qNum == 0){
+           return qNum;
+        }
+        else {
+          return qNum - 1;
+        }
+      });
+    }
+
+
   if (!user) return <div>loading...</div>;
   return (
     <div className="flex flex-row scrollbar-hide bg-[#1E1E21]">
       <div className="bg-[#1E1E21] text-white mt-5 mb-5 ml-5 p-5 h-[95vh] rounded-lg flex flex-col w-1/3">
-        <h2 className="text-white text-2xl pr-5">QUESTION</h2>
+        <div className="text-white text-2xl pr-5 flex flex-row"><div onClick={goToPrevQuestion} className="pr-2 pl-2 cursor-pointer"> &lt; </div>QUESTION {questionNumber}<div onClick={goToNextQuestion} className="pr-2 pl-2 cursor-pointer"> &gt; </div></div>
         <textarea
           disabled
           className="text-white p-2 bg-[#252526] rounded-lg outline-none resize-none h-full scrollbar-hide"

@@ -1,8 +1,4 @@
 {
-  "/page": "app/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/auth/page": "app/auth/page.js",
-  "/editor/page": "app/editor/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/auth/reset_password/[...slug]/page": "app/auth/reset_password/[...slug]/page.js"
+  "/editor/page": "app/editor/page.js"
 }
