@@ -9,6 +9,10 @@ export default function Page({ children }) {
 
   const handleLogin = async () => {
     // this will create user with the given password and srn. If user already exists, it will just login
+    if (!srnRef.current.value || !passwordRef.current.value) {
+      alert("Please enter both SRN and password");
+      return;
+    }
     try {
       // sends post request to /api/login with srn and password
       const res = await fetch("/api/backendi/auth/login", {
@@ -41,6 +45,33 @@ export default function Page({ children }) {
     }
   };
 
+  const handleForgotPassword = async () => {
+    if (!srnRef.current.value) {
+      alert("Please enter your SRN");
+      return;
+    }
+    try {
+      const response = await fetch("/api/backendi/auth/forgot_password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          srn: srnRef.current.value,
+        }),
+      });
+      if (!response.ok) throw new Error(response.statusText);
+      alert(
+        "Password reset link has been sent to your PESU email (the one with PESxUGxxxxyyy@pesu.pes.edu)",
+      );
+    } catch (err) {
+      alert(
+        "Something went wrong in logging in. Please contact the sys admin. The error is logged to the console.",
+      );
+      console.log(err);
+    }
+  };
+
   return (
     <div className="h-screen w-screen bg-black flex justify-center items-center">
       <div className="h-1/2 w-1/4 rounded-lg bg-[#1E1E21] flex flex-col justify-center items-center">
@@ -60,6 +91,12 @@ export default function Page({ children }) {
             placeholder="Password"
             className="bg-[#252526] text-white p-3 outline-none border-b-white border-b-2 rounded-t-lg m-3"
           ></input>
+          <div
+            onClick={handleForgotPassword}
+            className="text-blue-200 hover:text-blue-300 cursor-pointer"
+          >
+            Forgot Password?
+          </div>
           <button
             className="bg-[#252526] text-white p-3 rounded-lg m-3 border-2 border-[#252526] hover:border-white"
             onClick={handleLogin}

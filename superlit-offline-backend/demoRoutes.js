@@ -163,7 +163,7 @@ router.post("/auth/forgot_password", async (req, res) => {
 
       // send this link to the user's email somehow.
       var transporter = nodemailer.createTransport({
-        service: "Mailgun",
+        service: "gmail",
         auth: {
           user: process.env.MAIL_USER,
           pass: process.env.MAIL_PASS,
