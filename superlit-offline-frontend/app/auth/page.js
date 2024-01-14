@@ -1,12 +1,13 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
+import { useAuth } from "@/components/AuthContext";
 
 export default function Page({ children }) {
   const srnRef = useRef(null);
   const passwordRef = useRef(null);
   const router = useRouter();
-
+  const { user, login, logout } = useAuth();
   const handleLogin = async () => {
     // this will create user with the given password and srn. If user already exists, it will just login
     if (!srnRef.current.value || !passwordRef.current.value) {
@@ -32,6 +33,7 @@ export default function Page({ children }) {
       console.log(data);
       if (data.success) {
         // if success is true, redirect to /dashboard
+        login(srnRef.current.value);
         router.push("/dashboard");
       } else {
         // else, show alert

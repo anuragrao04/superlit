@@ -13,6 +13,9 @@ self.__RSC_CSS_MANIFEST={
     ],
     "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/dashboard/page": [
       "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/globals.css"
+    ],
+    "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/page": [
+      "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/globals.css"
     ]
   }
 }

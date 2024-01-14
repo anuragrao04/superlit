@@ -1,5 +1,6 @@
 "use client";
 import "./globals.css";
+import { AuthProvider } from "@/components/AuthContext";
 
 //export const metadata = {
 //  title: "Superlit",
@@ -9,7 +10,9 @@ import "./globals.css";
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="{inter.className} overflow-hidden">{children}</body>
+      <AuthProvider>
+        <body className="{inter.className} overflow-hidden">{children}</body>
+      </AuthProvider>
     </html>
   );
 }

@@ -1,5 +1,15 @@
+"use client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAuth } from "@/components/AuthContext";
+import { useRouter } from "next/navigation";
+
 export default function Dashboard() {
+  const { user, login, logout } = useAuth();
+  const router = useRouter();
+  console.log(user);
+  if (!user) {
+    router.replace("/auth");
+  }
   // get logged_in_user_type from backend
   const user_type = "teacher";
   return (
