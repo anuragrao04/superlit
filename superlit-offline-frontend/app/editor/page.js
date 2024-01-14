@@ -1,41 +1,85 @@
 "use client";
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useState } from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/AuthContext";
 
 import { loader } from "@monaco-editor/react";
-import * as monaco from "monaco-editor";
+
 const Editor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
+const monaco = dynamic(
+  () =>
+    import("monaco-editor").then(() => {
+      loader.config({ monaco });
+    }),
+  { ssr: false },
+);
 
-loader.config({ monaco });
-const defaultCode = String.raw`#include <stdio.h>
+// this must be fetched from server in the future
+const test_data = {
+  test_id: 0,
+  class_id: 0,
+  questions: [
+    {
+      question_id: 0,
+      question: String.raw`Write a C program to print 'Hello Superlit!'. Next, take an integer input and print it's square`,
+      defaultCode: String.raw`#include <stdio.h>
 #include <stdlib.h>
-
 int main(int argc, char *argv[]){
-  int x;
-  printf("Hello Superlit!\n");
-  scanf("%d", &x);
-  printf("%d", x);
-  return EXIT_SUCCESS;
-}`;
+  // put your code here
+}`,
 
-var question = String.raw`Write a C program to print 'Hello Superlit!'. Next, take an integer input and print it's square`;
-var example_input = `2`;
-var example_output = `Hello Superlit!
-4
-`;
+      example_input: `2`,
+      example_output: `Hello Superlit!
+4`,
+    },
+    {
+      question_id: 1,
+      question: String.raw`Write a C program to print 'I am going to fail this test'`,
+      defaultCode: String.raw`#include <stdio.h>
+#include <stdlib.h>
+int main(int argc, char *argv[]){
+  // just kidding, ik you're not. but put your code here
+}`,
+
+      example_input: ``,
+      example_output: `I am going to fail this test`,
+    },
+    {
+      question_id: 2,
+      question: String.raw`Write a C program print 69`,
+      defaultCode: String.raw`#include <stdio.h>
+#include <stdlib.h>
+int main(int argc, char *argv[]){
+  // put your code here
+}`,
+
+      example_input: ``,
+      example_output: `69`,
+    },
+  ],
+};
 
 export default function CodeEditor() {
   const editorRef = useRef(null);
   const inputRef = useRef(null);
   const outputRef = useRef(null);
+  const [questionNumber, setQuestionNumber] = useState(0);
+  const router = useRouter();
+  const { user, login, logout } = useAuth();
+  useEffect(() => {
+    if (!user) router.replace("/auth");
+  }, []);
 
   function handleEditorDidMount(editor, monaco) {
     editorRef.current = editor;
   }
 
   function run_button_clicked() {
+    console.log(editorRef.current);
     const editorValue = editorRef.current.getValue();
     const inputValue = inputRef.current.value;
     const post_request_data = {
@@ -54,6 +98,8 @@ export default function CodeEditor() {
         },
       })
       .then((response) => {
+        console.log("Compiler post request successful");
+        console.log(response.data);
         const output_screen = outputRef.current;
         output_screen.value = response.data;
       })
@@ -129,6 +175,7 @@ export default function CodeEditor() {
       });
   }
 
+  if (!user) return <div>loading...</div>;
   return (
     <div className="flex flex-row scrollbar-hide bg-[#1E1E21]">
       <div className="bg-[#1E1E21] text-white mt-5 mb-5 ml-5 p-5 h-[95vh] rounded-lg flex flex-col w-1/3">
@@ -136,7 +183,7 @@ export default function CodeEditor() {
         <textarea
           disabled
           className="text-white p-2 bg-[#252526] rounded-lg outline-none resize-none h-full scrollbar-hide"
-          value={question}
+          value={test_data.questions[questionNumber].question}
         ></textarea>
 
         <h2 className="text-white text-2xl pt-2 pr-5">EXAMPLE</h2>
@@ -144,13 +191,13 @@ export default function CodeEditor() {
         <textarea
           disabled
           className="text-white p-2 bg-[#252526] rounded-lg outline-none resize-none h-1/4 scrollbar-hide"
-          value={example_input}
+          value={test_data.questions[questionNumber].example_input}
         ></textarea>
         <h3 className="text-white text-xl pt-2 pl-2 pr-2">OUTPUT</h3>
         <textarea
           disabled
           className="text-white p-2 bg-[#252526] rounded-lg outline-none resize-none h-1/4 scrollbar-hide"
-          value={example_output}
+          value={test_data.questions[questionNumber].example_output}
         ></textarea>
       </div>
 
@@ -159,7 +206,7 @@ export default function CodeEditor() {
           height="80vh"
           theme="vs-dark"
           defaultLanguage="c"
-          defaultValue={defaultCode}
+          defaultValue={test_data.questions[questionNumber].defaultCode}
           automaticLayout="true"
           className="m-5 pt-5 pb-5 bg-[#1E1E21] rounded-lg"
           onMount={handleEditorDidMount}
@@ -171,7 +218,7 @@ export default function CodeEditor() {
             </div>
             <textarea
               className="code_input h-full w-full rounded-b-lg bg-[#252526] text-white outline-none resize-none pb-2 pl-2 pr-2"
-              defaultValue={example_input}
+              defaultValue={test_data.questions[questionNumber].example_input}
               ref={inputRef}
             ></textarea>
           </div>

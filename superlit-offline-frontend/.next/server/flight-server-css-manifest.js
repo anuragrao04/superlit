@@ -5,16 +5,10 @@ self.__RSC_CSS_MANIFEST={
     ]
   },
   "cssModules": {
+    "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/editor/page": [
+      "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/globals.css"
+    ],
     "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/auth/page": [
-      "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/globals.css"
-    ],
-    "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/auth/reset_password/[...slug]/page": [
-      "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/globals.css"
-    ],
-    "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/dashboard/page": [
-      "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/globals.css"
-    ],
-    "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/page": [
       "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/globals.css"
     ]
   }
