@@ -5,6 +5,7 @@ const router = express.Router();
 const { execSync } = require("child_process");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const getScore = require("./submit");
 
 const {
   MongoClient,
@@ -118,15 +119,57 @@ router.post("/submit", async (req, res) => {
   }
 });
 
-
 router.get("/get_test_data/:test_id", async (req, res, next) => {
   // fetch test data from db
   const test_collection = db.collection("tests");
-  const test_data = await test_collection.findOne({_id: Number(req.params.test_id)});
+  const test_data = await test_collection.findOne({
+    _id: Number(req.params.test_id),
+  });
   res.send(test_data);
 });
 
+router.post("/submit_test", async (req, res, next) => {
+  const test_id = req.body["test_id"];
+  const srn = req.body["srn"];
+  const editorData = req.body["editorData"];
 
+  // fetch test data from db
+  const test_collection = db.collection("tests");
+  const test_data = await test_collection.findOne({
+    _id: Number(test_id),
+  });
+
+  let scores = [];
+
+  // run the test cases for every question. get the scores.
+  for (let [i, question] of test_data["questions"].entries()) {
+    const question_score = getScore(editorData[i], question["test_cases"]);
+    scores[i] = question_score;
+  }
+
+  // calculate total score
+  let total_score = 0;
+  for (let score of scores) {
+    total_score += score;
+  }
+
+  // save the score in the database
+  let db_data = {
+    srn: srn,
+    scores: scores,
+    total_score: total_score,
+  };
+  const responses_collection = db.collection("responses");
+  await responses_collection.updateOne(
+    { _id: test_id },
+    {
+      $push: { responses: db_data }, // Push new object to array
+    },
+    { upsert: true },
+  );
+  console.log("ungabunga");
+  res.sendStatus(200);
+});
 
 router.post("/auth/login", async (req, res) => {
   // first we check if the srn (username) exists in the database
