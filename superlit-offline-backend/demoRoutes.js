@@ -118,6 +118,16 @@ router.post("/submit", async (req, res) => {
   }
 });
 
+
+router.get("/get_test_data/:test_id", async (req, res, next) => {
+  // fetch test data from db
+  const test_collection = db.collection("tests");
+  const test_data = await test_collection.findOne({_id: Number(req.params.test_id)});
+  res.send(test_data);
+});
+
+
+
 router.post("/auth/login", async (req, res) => {
   // first we check if the srn (username) exists in the database
   const srn = req.body["srn"];

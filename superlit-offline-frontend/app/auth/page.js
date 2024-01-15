@@ -32,9 +32,9 @@ export default function Page({ children }) {
       const data = await res.json();
       console.log(data);
       if (data.success) {
-        // if success is true, redirect to /editor (temporarily, would be /dashboard later)
+        // if success is true, redirect to /test/0 (test with ID 0) (temporarily, would be /dashboard later)
         login(srnRef.current.value);
-        router.push("/editor");
+        router.push("/test/0");
       } else {
         // else, show alert
         alert("Make sure your password is right");

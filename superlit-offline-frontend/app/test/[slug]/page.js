@@ -19,51 +19,50 @@ const monaco = dynamic(
 );
 
 // this must be fetched from server in the future
-const test_data = {
-  test_id: 0,
-  class_id: 0,
-  questions: [
-    {
-      question_id: 0,
-      question: String.raw`Write a C program to print 'Hello Superlit!'. Next, take an integer input and print it's square`,
-      defaultCode: String.raw`#include <stdio.h>
-#include <stdlib.h>
-int main(int argc, char *argv[]){
-  // put your code here
-}`,
+// const test_data = {
+//   test_id: 0,
+//   class_id: 0,
+//   teacher: "Some dude",
+//   questions: [
+//     {
+//       question_id: 0,
+//       question: String.raw`Write a C program to print 'Hello Superlit!'. Next, take an integer input and print it's square`,
+//       defaultCode: String.raw`#include <stdio.h>
+// #include <stdlib.h>
+// int main(int argc, char *argv[]){
+//   // put your code here
+// }`,
 
-      example_input: `2`,
-      example_output: `Hello Superlit!
-4`,
-    },
-    {
-      question_id: 1,
-      question: String.raw`Write a C program to print 'I am going to fail this test'`,
-      defaultCode: String.raw`#include <stdio.h>
-#include <stdlib.h>
-int main(int argc, char *argv[]){
-  // just kidding, ik you're not. but put your code here
-}`,
+//       example_input: `2`,
+//       example_output: `Hello Superlit!
+// 4`,
+//     },
+//     {
+//       question_id: 1,
+//       question: String.raw`Write a C program to print 'I am going to fail this test'`,
+//       defaultCode: String.raw`#include <stdio.h>
+// #include <stdlib.h>
+// int main(int argc, char *argv[]){
+//   // just kidding, ik you're not. but put your code here
+// }`,
+//       example_input: ``,
+//       example_output: `I am going to fail this test`,
+//     },
+//     {
+//       question_id: 2,
+//       question: String.raw`Write a C program print 69`,
+//       defaultCode: String.raw`#include <stdio.h>
+// #include <stdlib.h>
+// int main(int argc, char *argv[]){
+//   // put your code here
+// }`,
+//       example_input: ``,
+//       example_output: `69`,
+//     },
+//   ],
+// };
 
-      example_input: ``,
-      example_output: `I am going to fail this test`,
-    },
-    {
-      question_id: 2,
-      question: String.raw`Write a C program print 69`,
-      defaultCode: String.raw`#include <stdio.h>
-#include <stdlib.h>
-int main(int argc, char *argv[]){
-  // put your code here
-}`,
-
-      example_input: ``,
-      example_output: `69`,
-    },
-  ],
-};
-
-export default function CodeEditor() {
+export default function CodeEditor({params}) {
   const editorRef = useRef(null);
   const inputRef = useRef(null);
   const outputRef = useRef(null);
@@ -74,12 +73,30 @@ export default function CodeEditor() {
     if (!user) router.replace("/auth");
   }, []);
 
+  const test_id = params.slug;
+  console.log(test_id);
+
+  const [testData, setTestData] = useState(null);
+
+  // now we need to send this test_id to the server to fetch test details
+  async function fetch_test_data() {
+    try {
+      const res = await fetch("/api/backendi/get_test_data/" + test_id);
+      setTestData(await res.json());
+    } catch(e){
+      alert("Something went wrong. Contact the sys admin. The error has been logged to the console");
+      console.log(e);
+    }
+  }
+  useEffect(() => {
+    fetch_test_data();
+  }, []);
+
   function handleEditorDidMount(editor, monaco) {
     editorRef.current = editor;
   }
 
   function run_button_clicked() {
-    console.log(editorRef.current);
     const editorValue = editorRef.current.getValue();
     const inputValue = inputRef.current.value;
     const post_request_data = {
@@ -89,10 +106,10 @@ export default function CodeEditor() {
 
 
     console.log(editorValue);
-    // console.log(inputValue);
+    console.log(inputValue);
 
     axios
-      .post("api/backendi", post_request_data, {
+      .post("/api/backendi/", post_request_data, {
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
@@ -113,23 +130,7 @@ export default function CodeEditor() {
     const editorValue = editorRef.current.getValue();
     const post_request_data = {
       code: editorValue,
-      test_cases: [
-        {
-          input: `2`,
-          expected_output: `Hello Superlit!
-4`,
-        },
-        {
-          input: `4`,
-          expected_output: `Hello Superlit!
-16`,
-        },
-        {
-          input: `5`,
-          expected_output: `Hello Superlit!
-25`,
-        },
-      ],
+      test_cases: testData.questions[questionNumber].test_cases
     };
     // expected json response:
     // {
@@ -179,7 +180,7 @@ export default function CodeEditor() {
 
     const goToNextQuestion = () => {
       setQuestionNumber((qNum) => {
-        if(qNum == test_data.questions.length - 1){
+        if(qNum == testData.questions.length - 1){
            return qNum;
         }
         else {
@@ -201,6 +202,7 @@ export default function CodeEditor() {
 
 
   if (!user) return <div>loading...</div>;
+  if(testData == null) return <div>loading...</div>;
   return (
     <div className="flex flex-row scrollbar-hide bg-[#1E1E21]">
       <div className="bg-[#1E1E21] text-white mt-5 mb-5 ml-5 p-5 h-[95vh] rounded-lg flex flex-col w-1/3">
@@ -208,7 +210,7 @@ export default function CodeEditor() {
         <textarea
           disabled
           className="text-white p-2 bg-[#252526] rounded-lg outline-none resize-none h-full scrollbar-hide"
-          value={test_data.questions[questionNumber].question}
+          value={testData.questions[questionNumber].question}
         ></textarea>
 
         <h2 className="text-white text-2xl pt-2 pr-5">EXAMPLE</h2>
@@ -216,13 +218,13 @@ export default function CodeEditor() {
         <textarea
           disabled
           className="text-white p-2 bg-[#252526] rounded-lg outline-none resize-none h-1/4 scrollbar-hide"
-          value={test_data.questions[questionNumber].example_input}
+          value={testData.questions[questionNumber].example_input}
         ></textarea>
         <h3 className="text-white text-xl pt-2 pl-2 pr-2">OUTPUT</h3>
         <textarea
           disabled
           className="text-white p-2 bg-[#252526] rounded-lg outline-none resize-none h-1/4 scrollbar-hide"
-          value={test_data.questions[questionNumber].example_output}
+          value={testData.questions[questionNumber].example_output}
         ></textarea>
       </div>
 
@@ -231,7 +233,7 @@ export default function CodeEditor() {
           height="80vh"
           theme="vs-dark"
           defaultLanguage="c"
-          defaultValue={test_data.questions[questionNumber].defaultCode}
+          defaultValue={testData.questions[questionNumber].defaultCode}
           automaticLayout="true"
           className="m-5 pt-5 pb-5 bg-[#1E1E21] rounded-lg"
           onMount={handleEditorDidMount}
@@ -243,7 +245,7 @@ export default function CodeEditor() {
             </div>
             <textarea
               className="code_input h-full w-full rounded-b-lg bg-[#252526] text-white outline-none resize-none pb-2 pl-2 pr-2"
-              defaultValue={test_data.questions[questionNumber].example_input}
+              defaultValue={testData.questions[questionNumber].example_input}
               ref={inputRef}
             ></textarea>
           </div>

@@ -8,19 +8,19 @@ export default function Dashboard() {
   const { user, login, logout } = useAuth();
   const router = useRouter();
   console.log(user);
-  useEffect(() => {
-    if (!user) {
-      router.replace("/auth");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!user) {
+  //     router.replace("/auth");
+  //   }
+  // }, []);
   // we gotta figure out a way to determine user type
   const user_type = "teacher";
-  if (!user)
-    return (
-      <div className="flex justify-center items-center h-screen">
-        Loading...
-      </div>
-    );
+  // if (!user)
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       Loading...
+  //     </div>
+  //   );
   return (
     <div>
       {user_type === "teacher" ? (
