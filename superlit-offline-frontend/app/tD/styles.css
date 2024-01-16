@@ -1,0 +1,10 @@
+
+.glows {
+  border: 2px solid black; /* Base border */
+  padding: 10px;
+  cursor: pointer;
+}
+
+.glows.gradient-border {
+  border: 2px solid linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+}
