@@ -18,51 +18,7 @@ const monaco = dynamic(
   { ssr: false },
 );
 
-// this must be fetched from server in the future
-// const test_data = {
-//   test_id: 0,
-//   class_id: 0,
-//   teacher: "Some dude",
-//   questions: [
-//     {
-//       question_id: 0,
-//       question: String.raw`Write a C program to print 'Hello Superlit!'. Next, take an integer input and print it's square`,
-//       defaultCode: String.raw`#include <stdio.h>
-// #include <stdlib.h>
-// int main(int argc, char *argv[]){
-//   // put your code here
-// }`,
-
-//       example_input: `2`,
-//       example_output: `Hello Superlit!
-// 4`,
-//     },
-//     {
-//       question_id: 1,
-//       question: String.raw`Write a C program to print 'I am going to fail this test'`,
-//       defaultCode: String.raw`#include <stdio.h>
-// #include <stdlib.h>
-// int main(int argc, char *argv[]){
-//   // just kidding, ik you're not. but put your code here
-// }`,
-//       example_input: ``,
-//       example_output: `I am going to fail this test`,
-//     },
-//     {
-//       question_id: 2,
-//       question: String.raw`Write a C program print 69`,
-//       defaultCode: String.raw`#include <stdio.h>
-// #include <stdlib.h>
-// int main(int argc, char *argv[]){
-//   // put your code here
-// }`,
-//       example_input: ``,
-//       example_output: `69`,
-//     },
-//   ],
-// };
-
-export default function CodeEditor({params}) {
+export default function test({ params }) {
   const editorRef = useRef(null);
   const inputRef = useRef(null);
   const outputRef = useRef(null);
@@ -77,14 +33,22 @@ export default function CodeEditor({params}) {
   console.log(test_id);
 
   const [testData, setTestData] = useState(null);
+  const [editorData, setEditorData] = useState([]);
 
   // now we need to send this test_id to the server to fetch test details
   async function fetch_test_data() {
     try {
       const res = await fetch("/api/backendi/get_test_data/" + test_id);
-      setTestData(await res.json());
-    } catch(e){
-      alert("Something went wrong. Contact the sys admin. The error has been logged to the console");
+      const data = await res.json();
+      setTestData(data);
+      const editorData = data.questions.map((question) => {
+        return question.defaultCode;
+      });
+      setEditorData(editorData);
+    } catch (e) {
+      alert(
+        "Something went wrong. Contact the sys admin. The error has been logged to the console",
+      );
       console.log(e);
     }
   }
@@ -103,7 +67,6 @@ export default function CodeEditor({params}) {
       code: editorValue,
       input: inputValue,
     };
-
 
     console.log(editorValue);
     console.log(inputValue);
@@ -130,8 +93,9 @@ export default function CodeEditor({params}) {
     const editorValue = editorRef.current.getValue();
     const post_request_data = {
       code: editorValue,
-      test_cases: testData.questions[questionNumber].test_cases
+      test_cases: testData.questions[questionNumber].test_cases,
     };
+    console.log(post_request_data);
     // expected json response:
     // {
     //   "all_passed": true,
@@ -153,7 +117,7 @@ export default function CodeEditor({params}) {
     // }
 
     axios
-      .post("api/backendi/submit", post_request_data, {
+      .post("/api/backendi/submit", post_request_data, {
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
@@ -177,36 +141,84 @@ export default function CodeEditor({params}) {
       });
   }
 
+  function saveEditorData(value, event) {
+    setEditorData((editorData) => {
+      editorData[questionNumber] = value;
+      return editorData;
+    });
+  }
 
-    const goToNextQuestion = () => {
-      setQuestionNumber((qNum) => {
-        if(qNum == testData.questions.length - 1){
-           return qNum;
-        }
-        else {
-          return qNum + 1;
-        }
+  async function end_button_clicked() {
+    let post_request_data = {
+      test_id: test_id,
+      srn: user,
+      editorData: editorData,
+    };
+    console.log(post_request_data);
+    try {
+      await fetch("/api/backendi/submit_test", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(post_request_data),
       });
+      alert("Test submitted successfully");
+      router.replace("/auth");
+    } catch (e) {
+      alert(
+        "Something went wrong. Contact the sys admin. The error has been logged to the console",
+      );
+      console.log(e);
     }
+  }
 
-    const goToPrevQuestion = () => {
-      setQuestionNumber((qNum) => {
-        if(qNum == 0){
-           return qNum;
-        }
-        else {
-          return qNum - 1;
-        }
-      });
-    }
+  const goToNextQuestion = () => {
+    setQuestionNumber((qNum) => {
+      if (qNum == testData.questions.length - 1) {
+        return qNum;
+      } else {
+        return qNum + 1;
+      }
+    });
+  };
 
+  const goToPrevQuestion = () => {
+    setQuestionNumber((qNum) => {
+      if (qNum == 0) {
+        return qNum;
+      } else {
+        return qNum - 1;
+      }
+    });
+  };
 
-  if (!user) return <div>loading...</div>;
-  if(testData == null) return <div>loading...</div>;
+  if (!user || !testData)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        loading...
+      </div>
+    );
   return (
     <div className="flex flex-row scrollbar-hide bg-[#1E1E21]">
       <div className="bg-[#1E1E21] text-white mt-5 mb-5 ml-5 p-5 h-[95vh] rounded-lg flex flex-col w-1/3">
-        <div className="text-white text-2xl pr-5 flex flex-row"><div onClick={goToPrevQuestion} className="pr-2 pl-2 cursor-pointer"> &lt; </div>QUESTION {questionNumber}<div onClick={goToNextQuestion} className="pr-2 pl-2 cursor-pointer"> &gt; </div></div>
+        <div className="text-white text-2xl pr-5 flex flex-row">
+          <div
+            onClick={goToPrevQuestion}
+            className="pr-2 pl-2 cursor-pointer select-none"
+          >
+            {" "}
+            &lt;{" "}
+          </div>
+          QUESTION {questionNumber}
+          <div
+            onClick={goToNextQuestion}
+            className="pr-2 pl-2 cursor-pointer select-none"
+          >
+            {" "}
+            &gt;{" "}
+          </div>
+        </div>
         <textarea
           disabled
           className="text-white p-2 bg-[#252526] rounded-lg outline-none resize-none h-full scrollbar-hide"
@@ -233,10 +245,11 @@ export default function CodeEditor({params}) {
           height="80vh"
           theme="vs-dark"
           defaultLanguage="c"
-          defaultValue={testData.questions[questionNumber].defaultCode}
+          value={testData.questions[questionNumber].defaultCode}
           automaticLayout="true"
           className="m-5 pt-5 pb-5 bg-[#1E1E21] rounded-lg"
           onMount={handleEditorDidMount}
+          onChange={saveEditorData}
         />
         <div className="input_output_wrapper flex">
           <div className="input bg-[#1E1E21] text-white ml-5 h-[17vh] w-1/2 flex flex-col rounded-lg border-2 border-[#1E1E21]">
@@ -264,10 +277,14 @@ export default function CodeEditor({params}) {
               className="text-white z-10 pl-5 pr-5 flex flex-col rounded-lg text-xl justify-center items-center mt-5"
               onClick={submit_button_clicked}
             >
-              <div className="flex justify-center items-center">
-                <Image src="/run_button.png" alt="run" height={25} width={25} />
-              </div>
               <div className="text-gray text-sm pt-2">SUBMIT</div>
+            </button>
+
+            <button
+              className="text-red-200 z-10 pl-2 pr-2 flex flex-col rounded-lg text-xl justify-center items-center mt-5"
+              onClick={end_button_clicked}
+            >
+              <div className="text-gray text-sm pt-2">END TEST</div>
             </button>
           </div>
           <div className="output bg-[#1E1E21] text-white mr-5 h-[17vh] w-1/2 flex flex-col rounded-lg border-2 border-[#1E1E21]">
