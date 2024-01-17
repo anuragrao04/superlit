@@ -8,15 +8,9 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthContext";
 
 import { loader } from "@monaco-editor/react";
-
-const Editor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
-const monaco = dynamic(
-  () =>
-    import("monaco-editor").then(() => {
-      loader.config({ monaco });
-    }),
-  { ssr: false },
-);
+import Editor from "@monaco-editor/react";
+import * as monaco from "monaco-editor";
+loader.config({ monaco });
 
 export default function test({ params }) {
   const editorRef = useRef(null);
