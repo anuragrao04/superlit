@@ -158,6 +158,7 @@ router.post("/submit_test", async (req, res, next) => {
     srn: srn,
     scores: scores,
     total_score: total_score,
+    editor_data: editorData,
   };
   const responses_collection = db.collection("responses");
   await responses_collection.updateOne(
