@@ -1,5 +1,10 @@
 {
+  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/page": "app/page.js",
   "/auth/page": "app/auth/page.js",
-  "/test/[slug]/page": "app/test/[slug]/page.js"
+  "/dashboard/page": "app/dashboard/page.js",
+  "/tD/page": "app/tD/page.js",
+  "/viewClassroom/page": "app/viewClassroom/page.js",
+  "/test/[slug]/page": "app/test/[slug]/page.js",
+  "/auth/reset_password/[...slug]/page": "app/auth/reset_password/[...slug]/page.js"
 }

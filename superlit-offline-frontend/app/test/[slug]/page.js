@@ -9,18 +9,28 @@ import { useAuth } from "@/components/AuthContext";
 
 import { loader } from "@monaco-editor/react";
 import Editor from "@monaco-editor/react";
-import * as monaco from "monaco-editor";
-loader.config({ monaco });
 
-export default function test({ params }) {
+export default function Test({ params }) {
   const editorRef = useRef(null);
   const inputRef = useRef(null);
   const outputRef = useRef(null);
   const [questionNumber, setQuestionNumber] = useState(0);
   const router = useRouter();
   const { user, login, logout } = useAuth();
+  const [loading, setLoading] = useState(true);
+  // stuff that should run only once on page load
   useEffect(() => {
     if (!user) router.replace("/auth");
+    const monaco = dynamic(
+      import("monaco-editor").then((monaco) => {
+        console.log("monaco loaded");
+        console.log(monaco);
+        loader.config({ monaco });
+        setLoading(false);
+        return monaco;
+      }),
+      { ssr: false },
+    );
   }, []);
 
   const test_id = params.slug;
@@ -187,7 +197,7 @@ export default function test({ params }) {
     });
   };
 
-  if (!user || !testData)
+  if (!user || !testData || loading)
     return (
       <div className="flex justify-center items-center h-screen">
         loading...
