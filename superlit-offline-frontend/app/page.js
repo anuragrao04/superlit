@@ -15,7 +15,7 @@ export default function Home() {
             Meanwhile check out our editor:{" "}
           </div>
           <a
-            href="/editor"
+            href="/auth"
             className="no-underline flex justify-center align-center"
           >
             <button className="text-3xl mt-10 bg-[#252526] p-10 hover:text-4xl transition-all ease-in-out rounded-lg">

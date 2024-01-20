@@ -9,11 +9,13 @@ import { useAuth } from "@/components/AuthContext";
 
 import { loader } from "@monaco-editor/react";
 import Editor from "@monaco-editor/react";
+import { initVimMode } from "monaco-vim";
 
 export default function Test({ params }) {
   const editorRef = useRef(null);
   const inputRef = useRef(null);
   const outputRef = useRef(null);
+  const editor_vim_statusbar = useRef(null);
   const [questionNumber, setQuestionNumber] = useState(0);
   const router = useRouter();
   const { user, login, logout } = useAuth();
@@ -62,6 +64,7 @@ export default function Test({ params }) {
 
   function handleEditorDidMount(editor, monaco) {
     editorRef.current = editor;
+    const vimMode = initVimMode(editor, editor_vim_statusbar.current);
   }
 
   function run_button_clicked() {
@@ -255,6 +258,7 @@ export default function Test({ params }) {
           onMount={handleEditorDidMount}
           onChange={saveEditorData}
         />
+        <div className="editor-vim-statusbar" ref={editor_vim_statusbar}></div>
         <div className="input_output_wrapper flex">
           <div className="input bg-[#1E1E21] text-white ml-5 h-[17vh] w-1/2 flex flex-col rounded-lg border-2 border-[#1E1E21]">
             <div className="input_heading text-base text-bold bg-[#1E1E21] rounded-t-lg pl-2">
