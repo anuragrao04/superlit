@@ -55,12 +55,6 @@
     ]
   },
   "cssModules": {
-    "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/page": [
-      "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/globals.css"
-    ],
-    "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/auth/page": [
-      "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/globals.css"
-    ],
     "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/test/[slug]/page": [
       "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/globals.css",
       "/Users/anuragrao/projects/superlit/superlit-offline-frontend/node_modules/monaco-editor/esm/vs/editor/standalone/browser/standalone-tokens.css",
@@ -111,6 +105,9 @@
       "/Users/anuragrao/projects/superlit/superlit-offline-frontend/node_modules/monaco-editor/esm/vs/editor/browser/widget/diffEditor/accessibleDiffViewer.css",
       "/Users/anuragrao/projects/superlit/superlit-offline-frontend/node_modules/monaco-editor/esm/vs/editor/browser/widget/multiDiffEditorWidget/style.css",
       "/Users/anuragrao/projects/superlit/superlit-offline-frontend/node_modules/monaco-editor/esm/vs/base/browser/ui/toolbar/toolbar.css"
+    ],
+    "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/auth/page": [
+      "/Users/anuragrao/projects/superlit/superlit-offline-frontend/app/globals.css"
     ]
   }
 }
