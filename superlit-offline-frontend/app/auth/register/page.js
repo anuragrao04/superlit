@@ -17,7 +17,7 @@ export default function Register({ children }) {
     if (
       !IdRef.current.value ||
       !passwordRef.current.value ||
-      !!passwordRef.current.value
+      !passwordRef.current.value
     ) {
       alert("Please enter both SRN, password and repeat password");
       return;
@@ -62,7 +62,7 @@ export default function Register({ children }) {
 
   return (
     <div className="h-screen w-screen bg-black flex justify-center items-center">
-      <div className="h-1/2 w-1/4 rounded-lg bg-[#1E1E21] flex flex-col justify-center items-center">
+      <div className="min-h-1/2 w-1/4 rounded-lg bg-[#1E1E21] flex flex-col justify-center items-center">
         <div className="flex flex-col justify-center items-center">
           <input
             ref={IdRef}
@@ -82,7 +82,7 @@ export default function Register({ children }) {
             }}
             className="bg-[#252526] text-white p-3 outline-none border-b-white border-b-2 rounded-t-lg m-3"
           ></input>
-          <label>
+          <label className="text-white">
             <div className="px-2 inline">Who Dis?</div>
             <select
               name="type"
