@@ -82,7 +82,7 @@ export default function Test({ params }) {
     console.log(inputValue);
 
     axios
-      .post("/api/backendi/", post_request_data, {
+      .post("/api/backendi/run", post_request_data, {
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
@@ -167,7 +167,7 @@ export default function Test({ params }) {
     };
     console.log(post_request_data);
     try {
-      await fetch("/api/backendi/submit_test", {
+      await fetch("/api/backendi/end_test", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -333,7 +333,7 @@ export default function Test({ params }) {
                 className="text-white z-10 pl-5 pr-5 flex flex-col rounded-lg text-xl justify-center items-center mt-5"
                 onClick={submit_button_clicked}
               >
-                <div className="text-gray text-sm pt-2">SUBMIT</div>
+                <div className="text-gray text-sm pt-2">SUBMIT QUESTION</div>
               </button>
 
               <button
