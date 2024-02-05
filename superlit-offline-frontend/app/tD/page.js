@@ -5,7 +5,7 @@ export default function tdashboard(){
         <div>
             <div className="text-4xl flex justify-center items-center m-12 ">Hello Teachers Name!</div>
             <div className="wrapper"></div>
-        <div className=" grid grid-cols-4 gap-12 mt-12">
+        <div className=" grid lg:grid-cols-4 md:grid-cols-2 gap-12 mt-12">
           {dashboardOptions.map((dashboardItem, index) => (
             <div key={index}>
               <div className="card">

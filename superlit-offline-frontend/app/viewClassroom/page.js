@@ -1,7 +1,20 @@
+"use client";
 import './style.css';
+import {useState} from 'react';
 export default function ViewClassroom() {
  var classArray = [["3-A","Week-2","28-Jan-2024","02-Feb-2024"],["3-B","Week-4","28-Jan-2024","02-Feb-2024"]]
+ const [semesterNo, setSemesterNo] = useState('');
+ const [section, setSection] = useState('');
+ const [subject, setSubject] = useState('');
+  const [showForm, setShowForm] = useState(false);
 
+ const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log({ semesterNo, section, subject });
+    setSemesterNo('');
+    setSection('');
+    setSubject('');
+ };
  return (
  <div>
  <div className="container">
@@ -21,6 +34,7 @@ export default function ViewClassroom() {
               </div>
             </div>
           ))}
+          <div class="addClassroom" onClick = { () => setShowForm((prevShowForm) => !prevShowForm)}>
               <div className="card">
                 <div className="border"></div>
                 <div className="filter"></div>
@@ -28,7 +42,40 @@ export default function ViewClassroom() {
                 <div className="shadow"></div>
                 <div className="backdrop"></div>
               </div>
+          </div>
       </div> 
+      </div>
+      <div className={showForm ? "" : "hidden"}>
+        <form onSubmit={handleSubmit}>
+          <label>
+            Semester No:
+            <input
+              type="number"
+              value={semesterNo}
+              onChange={e => setSemesterNo(e.target.value)}
+            />
+          </label>
+          <br />
+          <label>
+            Section:
+            <input
+              type="text"
+              value={section}
+              onChange={e => setSection(e.target.value)}
+            />
+          </label>
+          <br />
+          <label>
+            Subject:
+            <input
+              type="text"
+              value={subject}
+              onChange={e => setSubject(e.target.value)}
+            />
+          </label>
+          <br />
+          <button type="submit">Submit</button>
+        </form>
       </div>
 <div className="circle one"></div>
 <div className="circle two"></div>
