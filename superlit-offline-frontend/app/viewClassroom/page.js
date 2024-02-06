@@ -1,13 +1,14 @@
 "use client";
 import './style.css';
+import Modal from 'react-modal';
 import {useState} from 'react';
 export default function ViewClassroom() {
  var classArray = [["3-A","Week-2","28-Jan-2024","02-Feb-2024"],["3-B","Week-4","28-Jan-2024","02-Feb-2024"]]
  const [semesterNo, setSemesterNo] = useState('');
  const [section, setSection] = useState('');
  const [subject, setSubject] = useState('');
-  const [showForm, setShowForm] = useState(false);
-
+ const [showForm, setShowForm] = useState(false);
+const [showModal, setShowModal] = useState(true);
  const handleSubmit = (event) => {
     event.preventDefault();
     console.log({ semesterNo, section, subject });
@@ -34,7 +35,7 @@ export default function ViewClassroom() {
               </div>
             </div>
           ))}
-          <div class="addClassroom" onClick = { () => setShowForm((prevShowForm) => !prevShowForm)}>
+          <div class="addClassroom"onclick={() => setshowmodal(true)}>
               <div className="card">
                 <div className="border"></div>
                 <div className="filter"></div>
@@ -45,7 +46,7 @@ export default function ViewClassroom() {
           </div>
       </div> 
       </div>
-      <div className={showForm ? "" : "hidden"}>
+      <Modal isOpen={true} ariaHideApp={false}>
         <form onSubmit={handleSubmit}>
           <label>
             Semester No:
@@ -74,9 +75,9 @@ export default function ViewClassroom() {
             />
           </label>
           <br />
-          <button type="submit">Submit</button>
+          <button type="submit" onclick={()=> setShowModal(false)}>Submit</button>
         </form>
-      </div>
+      </Modal>
 <div className="circle one"></div>
 <div className="circle two"></div>
 <svg>
