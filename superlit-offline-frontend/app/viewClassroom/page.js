@@ -8,7 +8,7 @@ export default function ViewClassroom() {
  const [section, setSection] = useState('');
  const [subject, setSubject] = useState('');
  const [showForm, setShowForm] = useState(false);
-const [showModal, setShowModal] = useState(true);
+ const [showModal, setShowModal] = useState(false);
  const handleSubmit = (event) => {
     event.preventDefault();
     console.log({ semesterNo, section, subject });
@@ -20,7 +20,7 @@ const [showModal, setShowModal] = useState(true);
  <div>
  <div className="container">
         <div className="lg:text-6xl md:text-4xl text-3xl m-12">Your Classrooms</div>
-        <div className=" grid lg:grid-cols-3 md:grid-cols-2 gap-12">
+        <div className=" grid lg:grid-cols-3 md:grid-cols-2 gap-12 z-0">
           {classArray.map((classItem, index) => (
             <div key={index}>
               <div className="card">
@@ -35,7 +35,7 @@ const [showModal, setShowModal] = useState(true);
               </div>
             </div>
           ))}
-          <div class="addClassroom"onclick={() => setshowmodal(true)}>
+          <div className="addClassroom"onClick={() => setShowModal((prevShowModal) => !prevShowModal)}>
               <div className="card">
                 <div className="border"></div>
                 <div className="filter"></div>
@@ -46,9 +46,9 @@ const [showModal, setShowModal] = useState(true);
           </div>
       </div> 
       </div>
-      <Modal isOpen={true} ariaHideApp={false}>
-        <form onSubmit={handleSubmit}>
-          <label>
+      <Modal isOpen={showModal ? true : false} ariaHideApp={false} className="bg-background flex justify-center items-center m-24 p-2">
+        <form onSubmit={handleSubmit} >
+          <label className="m-4">
             Semester No:
             <input
               type="number"
@@ -57,7 +57,7 @@ const [showModal, setShowModal] = useState(true);
             />
           </label>
           <br />
-          <label>
+          <label className="m-4">
             Section:
             <input
               type="text"
@@ -66,7 +66,7 @@ const [showModal, setShowModal] = useState(true);
             />
           </label>
           <br />
-          <label>
+          <label className="m-4">
             Subject:
             <input
               type="text"
@@ -75,7 +75,7 @@ const [showModal, setShowModal] = useState(true);
             />
           </label>
           <br />
-          <button type="submit" onclick={()=> setShowModal(false)}>Submit</button>
+          <button type="submit" onClick={()=> setShowModal(false)}>Submit</button>
         </form>
       </Modal>
 <div className="circle one"></div>
