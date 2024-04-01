@@ -21,17 +21,20 @@ export default function Test({ params }) {
   const [vimMode, setVimMode] = useState(false);
 
   const router = useRouter();
-  const { user, login, logout } = useAuth();
+  let { user, login, logout } = useAuth();
+  user = "ungabunga"
   const [loading, setLoading] = useState(true);
   // stuff that should run only once on page load
   useEffect(() => {
-    if (!user) router.replace("/auth");
+    // if (!user) router.replace("/auth");
     const monaco = dynamic(
       import("monaco-editor").then((monaco) => {
         console.log("monaco loaded");
         console.log(monaco);
         loader.config({ monaco });
+        console.log("config loaded");
         setLoading(false);
+        console.log("loading set to false");
         return monaco;
       }),
       { ssr: false },
@@ -47,8 +50,9 @@ export default function Test({ params }) {
   // now we need to send this test_id to the server to fetch test details
   async function fetch_test_data() {
     try {
-      const res = await fetch("/api/backendi/get_test_data/" + test_id);
+      const res = await fetch("/api/backendi/test/get_test_data/" + test_id);
       const data = await res.json();
+      console.log(data);
       setTestData(data);
       const editorData = data.questions.map((question) => {
         return question.defaultCode;
