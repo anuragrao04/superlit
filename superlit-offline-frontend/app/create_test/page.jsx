@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 
 const QuestionForm = () => {
   const [teacherId, setteacherId] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [questions, setQuestions] = useState([]);
 
   const addQuestion = () => {
@@ -31,6 +33,8 @@ const QuestionForm = () => {
     const output = {
       classId: 1,
       teacherId: Number(teacherId),
+      startDate,
+      endDate,
       questions: questions.map((q, index) => ({
         question_id: index,
         ...q,
@@ -71,13 +75,27 @@ const QuestionForm = () => {
   };
 
   return (
-    <div class="bg-black min-h-screen">
+    <div className="bg-black min-h-screen">
       <form onSubmit={handleSubmit} className="flex flex-col items-center mx-10">
         <input
           type="number"
           placeholder="EMP ID"
           value={teacherId}
           onChange={(e) => setteacherId(e.target.value)}
+          className="bg-[#252526] text-white p-3 outline-none border-b-white border-b-2 rounded-t-lg m-3 w-full"
+        />
+        <input
+          type="datetime-local"
+          placeholder="Start Time"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          className="bg-[#252526] text-white p-3 outline-none border-b-white border-b-2 rounded-t-lg m-3 w-full"
+        />
+        <input
+          type="datetime-local"
+          placeholder="Start Time"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
           className="bg-[#252526] text-white p-3 outline-none border-b-white border-b-2 rounded-t-lg m-3 w-full"
         />
         {questions.map((q, questionIndex) => (
