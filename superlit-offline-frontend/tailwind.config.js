@@ -22,6 +22,7 @@ colors: {
     },
   },
   plugins: [
+    require('@tailwindcss/typography'),
     require('tailwind-scrollbar-hide')
   ],
 }
