@@ -58,7 +58,7 @@ export default function sdashboard() {
             </div>
           </div>
         ))}
-        <div className="joinClassroom" onClick={handleOpenModal}>
+        <div className="joinClassroom z-0" onClick={handleOpenModal}>
           <div className="card h-96 w-96">
             <div className="border"></div>
             <div className="filter"></div>
@@ -72,7 +72,7 @@ export default function sdashboard() {
         isOpen={showModal}
         onRequestClose={handleCloseModal}
         ariaHideApp={false}
-        className="bg-background grid lg:m-24 justify-items-center overflow-hidden"
+        className="bg-background grid lg:m-24 justify-items-center overflow-hidden z-10"
       >
         <div ref={modalRef}>
           <label className="mt-2 mb-2 flex">
@@ -83,7 +83,7 @@ export default function sdashboard() {
               onChange={(e) => setRandomCode(e.target.value)}
             />
           </label>
-          <button className="mb-1" onClick={handleCloseModal}>
+          <button className="m-6" onClick={handleCloseModal}>
             Close
           </button>
         </div>
