@@ -1,5 +1,0 @@
-{
-  "/create_test/page": "app/create_test/page.js",
-  "/auth/page": "app/auth/page.js",
-  "/test/[slug]/page": "app/test/[slug]/page.js"
-}
