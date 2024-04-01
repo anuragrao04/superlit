@@ -1,21 +1,39 @@
-"use client";
-import './style.css';
+"use client"
+import React, { useState, useRef, useEffect } from 'react';
 import Modal from 'react-modal';
-import {useState} from 'react';
+import './style.css';
+
 export default function ViewClassroom() {
- var classArray = [["3-A","Week-2","28-Jan-2024","02-Feb-2024"],["3-B","Week-4","28-Jan-2024","02-Feb-2024"]]
+ var classArray = [["3-A","Week-2","28-Jan-2024","02-Feb-2024","xdgDesktop"],["3-B","Week-4","28-Jan-2024","02-Feb-2024","meRandomized"]];
  const [semesterNo, setSemesterNo] = useState('');
  const [section, setSection] = useState('');
  const [subject, setSubject] = useState('');
- const [showForm, setShowForm] = useState(false);
  const [showModal, setShowModal] = useState(false);
+
+ const modalRef = useRef();
+
+ useEffect(() => {
+    function handleClickOutside(event) {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setShowModal(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+ }, []);
+
  const handleSubmit = (event) => {
     event.preventDefault();
     console.log({ semesterNo, section, subject });
     setSemesterNo('');
     setSection('');
     setSubject('');
+    setShowModal(false); // Close the modal after submission
  };
+
  return (
  <div>
  <div className="container">
@@ -30,6 +48,7 @@ export default function ViewClassroom() {
                 <div className="text-2xl m-3">{classItem[1]}</div>
                 <div>Assigned On: {classItem[2]}</div>
                 <div>Due on: {classItem[3]}</div>
+                <div>Code: {classItem[4]}</div> {/*need to disply the random gen code here */}
                 <div className="shadow"></div>
                 <div className="backdrop"></div>
               </div>
@@ -46,9 +65,10 @@ export default function ViewClassroom() {
           </div>
       </div> 
       </div>
-      <Modal isOpen={showModal ? true : false} ariaHideApp={false} className="bg-background flex justify-center items-center m-24 p-2">
+   <Modal isOpen={showModal} ariaHideApp={false} className="bg-background grid lg:m-24 justify-items-center overflow-hidden " >
+   <div ref={modalRef}>
         <form onSubmit={handleSubmit} >
-          <label className="m-4">
+          <label className="m-4  flex ">
             Semester No:
             <input
               type="number"
@@ -56,8 +76,7 @@ export default function ViewClassroom() {
               onChange={e => setSemesterNo(e.target.value)}
             />
           </label>
-          <br />
-          <label className="m-4">
+          <label className="m-6 flex">
             Section:
             <input
               type="text"
@@ -65,18 +84,20 @@ export default function ViewClassroom() {
               onChange={e => setSection(e.target.value)}
             />
           </label>
-          <br />
-          <label className="m-4">
+          <label className="m-6 flex">
             Subject:
             <input
               type="text"
               value={subject}
               onChange={e => setSubject(e.target.value)}
             />
+          </label><label className="m-6 flex">
+            Code to add students:{}  {/*get random code from backend*/}        
           </label>
-          <br />
-          <button type="submit" onClick={()=> setShowModal(false)}>Submit</button>
+
+          <button type="submit" onClick={()=> setShowModal(false)} className="  m-6 ">Submit</button>
         </form>
+   </div>
       </Modal>
 <div className="circle one"></div>
 <div className="circle two"></div>

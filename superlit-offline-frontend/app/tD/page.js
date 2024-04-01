@@ -1,14 +1,15 @@
 import './style.css';
+import Link from 'next/link';
 export default function tdashboard(){
-    var dashboardOptions = ["Create New Assignment", "Create New Classroom", "View Past Assignment", "View Assignment", "View Student Marks"];
+    var dashboardOptions = ["Assignments", "Classroom"];
     return(
         <div>
-            <div className="text-4xl flex justify-center items-center m-12 ">Hello Teachers Name!</div>
+            <div className="text-4xl flex justify-center items-center m-12 lg:mb-24 ">Hello Teachers Name!</div>
             <div className="wrapper"></div>
-        <div className=" grid lg:grid-cols-4 md:grid-cols-2 gap-12 mt-12">
+        <div className=" grid lg:grid-cols-2 md:grid-cols-2 gap-12 mt-12">
           {dashboardOptions.map((dashboardItem, index) => (
             <div key={index}>
-              <div className="card">
+              <div className="card h-96 w-96">
                 <div className="border"></div>
                 <div className="filter"></div>
                 <div className="flex justify-center items-center text-2xl">{dashboardItem}</div>
